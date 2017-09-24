@@ -41,7 +41,7 @@ if (!statementNumber) {
     return;
 }
 
-console.log(chalk.yellow('pgu crawler initialization...'));
+console.log(chalk.yellow('pgu crawler started'));
 
 const crawlerOptions = {
     childLastName,
