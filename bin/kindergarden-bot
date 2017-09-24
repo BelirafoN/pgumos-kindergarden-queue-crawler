@@ -1,0 +1,89 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const chalk = require('chalk');
+const argv = require('optimist').argv;
+
+const PguMosCrawler = require('../lib/pgumos-crawler');
+const responseParse = require('../lib/helpers/pgumos-crawler-response-parser');
+const responseFormat = require('../lib/helpers/pgumos-response-format');
+const meta = require('../package.json');
+
+console.log(chalk.bold(`${meta.name} v.${meta.version} |`));
+console.log(chalk.bold(`${getCliDelimiter()}|`));
+
+const pguLogin = process.env.KLB_PGU_MOS_LOGIN || null;
+
+if (!pguLogin) {
+    console.log(chalk.red('env KLB_PGU_MOS_LOGIN is required'));
+    return;
+}
+
+const pguSecret = process.env.KLB_PGU_MOS_SECRET || null;
+
+if (!pguSecret) {
+    console.log(chalk.red('env KLB_PGU_MOS_SECRET is required'));
+    return;
+}
+
+const childLastName = process.env.KLB_CHILD_LASTNAME || null;
+
+if (!childLastName) {
+    console.log(chalk.red('env KLB_CHILD_LASTNAME is required'));
+    return;
+}
+
+const statementNumber = process.env.KLB_STATEMENT_NUMBER || null;
+
+if (!statementNumber) {
+    console.log(chalk.red('env KLB_STATEMENT_NUMBER is required'));
+    return;
+}
+
+console.log(chalk.yellow('pgu crawler initialization...'));
+
+const crawlerOptions = {
+    childLastName,
+    statementNumber,
+    headless: true,
+};
+
+if (argv.screenshot) {
+    crawlerOptions.screenshot = `${process.cwd()}/tmp/page.png`;
+}
+
+if (argv['headless-off']) {
+    crawlerOptions.headless = false;
+}
+
+const crawler = new PguMosCrawler(pguLogin, pguSecret, crawlerOptions);
+
+if (argv.v || argv.verbose) {
+    crawler.on('task', message => console.log(chalk.gray(` - ${message}`)));
+}
+
+crawler.getKindergartenInfo()
+    .then(responseParse)
+    .then(responseParsed => responseParsed.organizations)
+    .then(responseFormat)
+    .then(message => {
+        console.log(chalk.green('pgu crawler response:'));
+        console.log();
+        console.log(message);
+    })
+    .catch(error => {
+        console.log(chalk.red(`pgu crawler received error: ${error.message}`));
+        process.exit(1);
+    }).then(() => {
+        console.log(chalk.bold(getCliDelimiter()));
+        console.log(chalk.bold('done'));
+    });
+
+/**
+ * Возвращает строку-разделитель для вывода в поток вывода
+ * @returns {string}
+ */
+function getCliDelimiter() {
+    return '-'.repeat(38);
+}
