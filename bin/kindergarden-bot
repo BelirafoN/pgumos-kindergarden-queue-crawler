@@ -7,7 +7,7 @@ const argv = require('optimist').argv;
 
 const PguMosCrawler = require('../lib/pgumos-crawler');
 const responseParse = require('../lib/helpers/pgumos-crawler-response-parser');
-const responseFormat = require('../lib/helpers/pgumos-response-format');
+const responseFormat = require('../lib/helpers/crawler-response-cli-format');
 const meta = require('../package.json');
 
 console.log(chalk.bold(`${meta.name} v.${meta.version} |`));
