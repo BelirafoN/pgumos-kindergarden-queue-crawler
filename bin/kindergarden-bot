@@ -13,6 +13,7 @@ const meta = require('../package.json');
 console.log(chalk.bold(`${meta.name} v.${meta.version} |`));
 console.log(chalk.bold(`${getCliDelimiter()}|`));
 
+const verbose = Number(process.env.KLB_PGU_VERBOSE) === 1;
 const pguLogin = process.env.KLB_PGU_MOS_LOGIN || null;
 
 if (!pguLogin) {
@@ -27,6 +28,20 @@ if (!pguSecret) {
     return;
 }
 
+const childFirstName = process.env.KLB_CHILD_FIRSTNAME || null;
+
+if (!childFirstName) {
+    console.log(chalk.red('env KLB_CHILD_FIRSTNAME is required'));
+    return;
+}
+
+const childMiddleName = process.env.KLB_CHILD_SECONDNAME || null;
+
+if (!childMiddleName) {
+    console.log(chalk.red('env KLB_CHILD_SECONDNAME is required'));
+    return;
+}
+
 const childLastName = process.env.KLB_CHILD_LASTNAME || null;
 
 if (!childLastName) {
@@ -34,18 +49,61 @@ if (!childLastName) {
     return;
 }
 
-const statementNumber = process.env.KLB_STATEMENT_NUMBER || null;
+const childGender = process.env.KLB_CHILD_GENDER || null;
 
-if (!statementNumber) {
-    console.log(chalk.red('env KLB_STATEMENT_NUMBER is required'));
+if (!childGender) {
+    console.log(chalk.red('env KLB_CHILD_GENDER is required'));
+    return;
+}
+
+const childBirthDate = process.env.KLB_CHILD_BIRTHDATE || null;
+
+if (!childBirthDate) {
+    console.log(chalk.red('env KLB_CHILD_BIRTHDATE is required'));
+    return;
+}
+
+const childDocSer = process.env.KLB_CHILD_DOC_SER || null;
+
+if (!childDocSer) {
+    console.log(chalk.red('env KLB_CHILD_DOC_SER is required'));
+    return;
+}
+
+const childDocNumber = process.env.KLB_CHILD_DOC_NUMBER || null;
+
+if (!childDocNumber) {
+    console.log(chalk.red('env KLB_CHILD_DOC_NUMBER is required'));
+    return;
+}
+
+const childDocDate = process.env.KLB_CHILD_DOC_DATE || null;
+
+if (!childDocDate) {
+    console.log(chalk.red('env KLB_CHILD_DOC_DATE is required'));
+    return;
+}
+
+const childDocPlace = process.env.KLB_CHILD_DOC_PLACE || null;
+
+if (!childDocPlace) {
+    console.log(chalk.red('env KLB_CHILD_DOC_PLACE is required'));
     return;
 }
 
 console.log(chalk.yellow('pgu crawler started'));
 
 const crawlerOptions = {
+    childFirstName,
+    childMiddleName,
     childLastName,
-    statementNumber,
+    childGender,
+    childBirthDate,
+    childDocSer,
+    childDocNumber,
+    childDocDate,
+    childDocPlace,
+    verbose,
     headless: true,
 };
 
