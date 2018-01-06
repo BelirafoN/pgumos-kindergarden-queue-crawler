@@ -5,17 +5,24 @@
 const chalk = require('chalk');
 const argv = require('optimist').argv;
 
+const meta = require('../package.json');
 const PguMosCrawler = require('../lib/pgumos-crawler');
 const responseParse = require('../lib/helpers/pgumos-crawler-response-parser');
 const responseFormat = require('../lib/helpers/crawler-response-cli-format');
-const meta = require('../package.json');
 
 console.log(chalk.bold(`${meta.name} v.${meta.version} |`));
 console.log(chalk.bold(`${getCliDelimiter()}|`));
 
+// -- print help info --------------
+if (argv.help || argv.h) {
+    printHelpInfo();
+    process.exit(0);
+}
+
 const verbose = Number(process.env.KLB_PGU_VERBOSE) === 1;
 const pguLogin = process.env.KLB_PGU_MOS_LOGIN || null;
 
+// -- credentials ------------------
 if (!pguLogin) {
     console.log(chalk.red('env KLB_PGU_MOS_LOGIN is required'));
     return;
@@ -28,6 +35,7 @@ if (!pguSecret) {
     return;
 }
 
+// -- data of child ---------------
 const childFirstName = process.env.KLB_CHILD_FIRSTNAME || null;
 
 if (!childFirstName) {
@@ -91,6 +99,7 @@ if (!childDocPlace) {
     return;
 }
 
+// -- crawler init ------------------
 console.log(chalk.yellow('pgu crawler started'));
 
 const crawlerOptions = {
@@ -107,7 +116,7 @@ const crawlerOptions = {
     headless: true,
 };
 
-if (argv.screenshot) {
+if (argv.screenshot || argv.s) {
     crawlerOptions.screenshot = `${process.cwd()}/tmp/page.png`;
 }
 
@@ -117,10 +126,12 @@ if (argv['headless-off']) {
 
 const crawler = new PguMosCrawler(pguLogin, pguSecret, crawlerOptions);
 
-if (argv.v || argv.verbose) {
+if (argv.verbose || argv.v) {
     crawler.on('task', message => console.log(chalk.gray(` - ${message}`)));
+    crawlerOptions.verbose = true;
 }
 
+// -- crawling ---------------------
 crawler.getKindergartenInfo()
     .then(responseParse)
     .then(responseParsed => responseParsed.organizations)
@@ -144,4 +155,12 @@ crawler.getKindergartenInfo()
  */
 function getCliDelimiter() {
     return '-'.repeat(38);
+}
+
+function printHelpInfo() {
+    console.log(chalk.gray(`
+    --verbose      | -v  : verbose mod
+    --screenshot   | -s  : take screenshot
+    --headless-off       : headless mod off
+    `));
 }
