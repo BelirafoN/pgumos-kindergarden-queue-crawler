@@ -5,7 +5,7 @@
 ## Установка 
 
 ```bash
-$ npm i pgumos-kindergarten-queue-crawler
+$ npm i pgumos-kindergarden-queue-crawler
 ```
 
 ### Использование
