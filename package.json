@@ -1,13 +1,17 @@
 {
-  "name": "moscow-kindergarten-queue-bot",
+  "name": "pgumos-kindergarden-queue-crawler",
   "version": "1.0.0",
   "description": "",
   "main": "./lib/index.js",
   "bin": {
-    "kgbot": "./bin/kindergarden-bot"
+    "kgcrawler": "./bin/kindergarden-crawler"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/BelirafoN/pgumos-kindergarten-queue-crawler"
   },
   "author": "Alex Voronyansky <belirafon@gmail.com>",
   "license": "ISC",
